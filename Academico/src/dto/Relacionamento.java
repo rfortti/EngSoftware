@@ -3,23 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package vo;
+package dto;
 
 /**
  *
  * @author moises
  */
-public class RelacionamentoVO
+public class Relacionamento
 {
 
-  private IdiomaVO Idioma_id_idioma;
+  private Idioma Idioma_id_idioma;
 
-  public IdiomaVO getIdioma_id_idioma()
+  public Idioma getIdioma_id_idioma()
   {
     return Idioma_id_idioma;
   }
 
-  public void setIdioma_id_idioma(IdiomaVO Idioma_id_idioma)
+  public void setIdioma_id_idioma(Idioma Idioma_id_idioma)
   {
     this.Idioma_id_idioma = Idioma_id_idioma;
   }

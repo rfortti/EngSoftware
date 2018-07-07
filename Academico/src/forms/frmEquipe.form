@@ -25,41 +25,16 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="lblLogo" max="32767" attributes="0"/>
-          <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="252" max="-2" attributes="0"/>
-              <Component id="btnEquipe" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
-          </Group>
+          <Component id="jScrollPane1" alignment="0" pref="593" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <Component id="lblLogo" min="-2" pref="268" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="124" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnEquipe" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
+          <Component id="jScrollPane1" alignment="0" pref="442" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="lblLogo">
-      <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/img/logo ADS.gif"/>
-        </Property>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
-            <BevelBorder/>
-          </Border>
-        </Property>
-      </Properties>
-    </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>
         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
@@ -70,28 +45,24 @@
         <Component class="javax.swing.JTextArea" name="jTextArea">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="cc" green="ff" red="cc" type="rgb"/>
+            </Property>
             <Property name="columns" type="int" value="20"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="13" style="1"/>
             </Property>
             <Property name="rows" type="int" value="5"/>
-            <Property name="text" type="java.lang.String" value="&#x9;&#x9;&#x9;Sistema Acad&#xea;mico - vers&#xe3;o 2.0&#xa;&#xa;&#xa;&#xa;Copyright(C) 2015.&#xa;Todos os direitos reservados."/>
+            <Property name="text" type="java.lang.String" value="&#x9;&#x9;................................&#xa;&#x9;&#x9;: EQUIPE do Projeto de Sistema :&#xa;&#x9;&#x9;................................&#xa;_____________________________________________________________________&#xa;&#x9;GERENTE de PROJETO:&#xa;&#x9;&#x9;&#x9;&#x9;- Alexandre;&#xa;_____________________________________________________________________&#xa;&#xa;&#x9;AN&#xc1;LISE:&#xa;&#x9;&#x9;&#x9;&#x9;- Bestriz;&#xa;&#x9;&#x9;&#x9;&#x9;- Let&#xed;cia;&#x9;&#xa;&#x9;&#x9;&#x9;&#x9;- P&#xe2;mela;&#xa;&#x9;&#x9;&#x9;&#x9;- S&#xe2;mia;&#xa;_____________________________________________________________________&#xa;&#x9;&#xa;&#x9;BANCO DE DADOS:&#xa;&#x9;&#x9;&#x9;&#x9;- Ewerton;&#x9;&#x9;&#xa;&#x9;&#x9;&#x9;&#x9;- F&#xe1;bio;&#xa;&#x9;&#x9;&#x9;&#x9;- Michele;&#xa;&#x9;&#x9;&#x9;&#x9;- Vitor Fabbro;&#xa;&#x9;&#x9;&#x9;&#x9;- Washington&#xa;_____________________________________________________________________&#xa;&#xa;&#x9;GERENTE de DESENVOLVIMENTO:&#xa;&#x9;&#x9;&#x9;&#x9;- Ewerton;&#xa;_____________________________________________________________________&#xa;&#xa;&#x9;DESENVOLVEDORES:&#xa;&#xa;&#x9;&#x9;[Requisito 1]&#xa;&#x9;&#x9;&#x9;&#x9;- Jonatas;&#xa;&#x9;&#x9;&#x9;&#x9;- Luis;&#xa;&#x9;&#x9;&#x9;&#x9;- Tain&#xe1;;&#xa;&#xa;&#x9;&#x9;[Requisito 2]&#xa;&#x9;&#x9;&#x9;&#x9;- Cristiane;&#xa;&#x9;&#x9;&#x9;&#x9;- J&#xe9;ssica;&#xa;&#x9;&#x9;&#x9;&#x9;- Mois&#xe9;s;&#xa;&#xa;&#x9;&#x9;[Requisito 3]&#xa;&#x9;&#x9;&#x9;&#x9;- Alexandre;&#xa;&#x9;&#x9;&#x9;&#x9;- Janaina;&#xa;&#x9;&#x9;&#x9;&#x9;- Pedro;&#xa;&#x9;&#x9;&#x9;&#x9;- Roberto;&#xa;&#x9;&#xa;&#x9;&#x9;[Requisito 4]&#xa;&#x9;&#x9;&#x9;&#x9;- Anderson;&#xa;&#x9;&#x9;&#x9;&#x9;- Lucas;&#xa;&#x9;&#x9;&#x9;&#x9;- Vitor Ciudim;&#xa;_____________________________________________________________________&#xa;&#xa;&#x9;TESTERS:&#xa;&#x9;&#x9;&#x9;&#x9;- Beatriz;&#xa;&#x9;&#x9;&#x9;&#x9;- Jonatas;&#xa;&#x9;&#x9;&#x9;&#x9;- P&#xe2;mela;&#xa;&#x9;&#x9;&#x9;&#x9;- Pedro;&#xa;_____________________________________________________________________"/>
+            <Property name="autoscrolls" type="boolean" value="false"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
-                <EtchetBorder/>
+              <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
+                <BevelBorder/>
               </Border>
             </Property>
           </Properties>
         </Component>
       </SubComponents>
     </Container>
-    <Component class="java.awt.Button" name="btnEquipe">
-      <Properties>
-        <Property name="label" type="java.lang.String" value="EQUIPE"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEquipeActionPerformed"/>
-      </Events>
-    </Component>
   </SubComponents>
 </Form>

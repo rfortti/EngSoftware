@@ -25,16 +25,16 @@ import utils.AceitaNumeros;
  *
  * @author Janaina & Roberto
  */
-public class frmConsulta extends javax.swing.JFrame
-{           
+public class frmConsulta2 extends javax.swing.JFrame
+{    
+            
+    private static frmConsulta2 instance;
     
-    private static frmConsulta instance;
-  
-    public static frmConsulta getInstance()
+    public static frmConsulta2 getInstance()
     {
         if(instance == null)
       {
-        instance = new frmConsulta();
+        instance = new frmConsulta2();
         
       }
        
@@ -42,7 +42,7 @@ public class frmConsulta extends javax.swing.JFrame
         
     }
     
-  frmConsulta()
+  frmConsulta2()
   {
     initComponents();
     
@@ -88,7 +88,7 @@ public class frmConsulta extends javax.swing.JFrame
         jScrollPane2.setViewportView(jList1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(".: Consulta Disciplinas cursadas por Aluno :.");
+        setTitle(".: Consulta Disciplinas lecionadas por Professor :.");
         setName("frmConsulta"); // NOI18N
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -97,7 +97,7 @@ public class frmConsulta extends javax.swing.JFrame
             }
         });
 
-        pnlConsulta.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Consulta Disciplinas X Aluno", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 1, 18), java.awt.Color.blue)); // NOI18N
+        pnlConsulta.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Consulta Disciplinas X Professor", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 1, 18), java.awt.Color.blue)); // NOI18N
 
         lblNome.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         lblNome.setText("Prontuário:");
@@ -107,7 +107,7 @@ public class frmConsulta extends javax.swing.JFrame
 
             },
             new String [] {
-                "Nome", "CursaDisciplinas", "CargaHorária"
+                "Nome", "LecionaDisciplinas", "CargaHorária"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -177,13 +177,11 @@ public class frmConsulta extends javax.swing.JFrame
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rbProntuario)
-                .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(rbNome)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rbProntuario)
+                    .addComponent(rbNome))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -191,9 +189,9 @@ public class frmConsulta extends javax.swing.JFrame
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(rbProntuario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rbNome)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout pnlConsultaLayout = new javax.swing.GroupLayout(pnlConsulta);
@@ -203,7 +201,6 @@ public class frmConsulta extends javax.swing.JFrame
             .addGroup(pnlConsultaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlConsultaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addGroup(pnlConsultaLayout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -214,13 +211,15 @@ public class frmConsulta extends javax.swing.JFrame
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnLimpar))
                             .addComponent(txtProntuario))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(115, 115, 115))
+                    .addGroup(pnlConsultaLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())))
         );
         pnlConsultaLayout.setVerticalGroup(
             pnlConsultaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlConsultaLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addGap(21, 21, 21)
                 .addGroup(pnlConsultaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(pnlConsultaLayout.createSequentialGroup()
                         .addComponent(lblNome)
@@ -230,7 +229,7 @@ public class frmConsulta extends javax.swing.JFrame
                         .addGroup(pnlConsultaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnLocalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnLimpar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
         );
@@ -276,11 +275,11 @@ public class frmConsulta extends javax.swing.JFrame
         {
             Consulta consulta = new Consulta();
             ArrayList<Consulta> user = new ArrayList<Consulta>();
-            user = consulta.getDisciplinaByAluno(txtProntuario.getText());
-             
+            user = consulta.getDisciplinaByProfessor(txtProntuario.getText());
+            
             if (user == null) 
             {
-                JOptionPane.showMessageDialog(null, "Nenhum aluno encontrado !");
+                JOptionPane.showMessageDialog(null, "Nenhum professor encontrado !");
             }
             else
             {
@@ -306,18 +305,18 @@ public class frmConsulta extends javax.swing.JFrame
     {
         if (txtProntuario.getText().isEmpty()) 
         {
-            JOptionPane.showMessageDialog(null, "Informe o nome do aluno !");
+            JOptionPane.showMessageDialog(null, "Informe o nome do professor !");
             txtProntuario.requestFocus();
         }
         else
         {
             Consulta consulta = new Consulta();
             ArrayList<Consulta> user = new ArrayList<Consulta>();
-            user = consulta.getDisciplinaByAluno2(txtProntuario.getText());
-             
+            user = consulta.getDisciplinaByProfessor2(txtProntuario.getText());
+            
             if (user == null) 
             {
-                JOptionPane.showMessageDialog(null, "Nenhum aluno encontrado !");
+                JOptionPane.showMessageDialog(null, "Nenhum professor encontrado !");
             }
             else
             {

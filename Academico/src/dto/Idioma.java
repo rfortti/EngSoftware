@@ -3,34 +3,48 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package dto;
 
-import java.sql.ResultSet;
 /**
  *
- * @author Multas
+ * @author Janaina & Roberto
  */
 public class Idioma {
+    
+    private int idIdioma;
+    private String nome;
 
-    private int i_ID;
-    private String i_Nome;
-        
-    //ALT + Insert (Getter e Setter) gera os métodos  abaixo
-    public int getI_ID() {
-        return i_ID;
+  
+    public int getIdIdioma() {
+        return idIdioma;
     }
 
-    public void setI_ID(int i_ID) {
-        this.i_ID = i_ID;
+    public void setIdIdioma(int idIdioma) {
+        this.idIdioma = idIdioma;
     }
 
-    public String getI_Nome() {
-        return i_Nome;
+    public String getIdioma()
+    {
+        return nome;
     }
 
-    public void setI_Nome(String i_Nome) {
-        this.i_Nome = i_Nome;
+    public void setIdioma(String nome)
+    {
+        this.nome = nome;
+    }
+    
+    //metodo to string para retornar o nome do idioma ao inves do codigo no preenchimento do combo
+     public String toString(){
+        return this.nome;
+    }
+    
+    public boolean equals(Object obj){
+        if(obj instanceof Idioma){
+            Idioma iVO = (Idioma) obj;
+            return iVO.getIdioma().equals(this.getIdioma());
+        }else{
+            return false;
+        }
     }
     
 }

@@ -1,16 +1,26 @@
 package forms;
 
-import dao.AlunoMDAO;
-import dao.IdiomaMDAO;
-import dao.RelacionamentoMDAO;
-import dao.UsuarioMDAO;
+import dao.AlunoDAO;
+import dao.DisciplinaDAO;
+import dao.IdiomaDAO;
+import dao.RelacionamentoDAO;
+import dao.RelacionamentoDisciplinaDAO;
+import dao.UsuarioDAO;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import vo.AlunoVO;
-import vo.IdiomaVO;
-import vo.RelacionamentoVO;
-import vo.UsuarioVO;
+import utils.AceitaNumeros;
+import utils.AceitaStrings;
+import dto.Aluno;
+import dto.Disciplina;
+import dto.Idioma;
+import dto.Relacionamento;
+import dto.RelacionamentoDisciplina;
+import dto.Usuario;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import utils.LimitarLetras;
+import utils.LimitarNumeros;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,10 +34,38 @@ import vo.UsuarioVO;
 public class frmAluno extends javax.swing.JFrame {
 
     DefaultTableModel tIdiomas;
+    DefaultTableModel tDisciplinas;
 
-    public frmAluno() {
+    private ArrayList<Idioma> list;
+    private ArrayList<Disciplina> listD;
+    
+    private AlunoDAO alunoDAO;
+    private static frmAluno instance;
+    
+    public static frmAluno getInstance()
+    {
+        if(instance == null)
+      {
+        instance = new frmAluno();
+        
+      }
+       
+      return instance;
+        
+    }
+    
+    frmAluno()
+    {
         initComponents();
+        txtNome.setDocument(new AceitaStrings());
+        txtNome.setDocument(new LimitarLetras(45));
+        txtCidade.setDocument(new AceitaStrings());
+        txtNome.setDocument(new LimitarLetras(30));
+        txtIdade.setDocument(new AceitaNumeros());
+        txtIdade.setDocument(new LimitarNumeros(2));
+               
         popularComboIdioma();
+        popularComboDisciplina();
         desablitaBotoes();
         desabilitaCampos();
     }
@@ -35,12 +73,32 @@ public class frmAluno extends javax.swing.JFrame {
     //metodo para popular combo idiomas
     public void popularComboIdioma() {
 
-        IdiomaMDAO iDAO = new IdiomaMDAO();
-        List<IdiomaVO> idiomas = iDAO.listarIdiomas();
-        cbIdioma.removeAllItems();
+        IdiomaDAO dAO = new IdiomaDAO();
+        list = dAO.getIdiomas(1);
+        if (list.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Cadastre pelo menos um idioma em:"
+                    + "\nMenu - Cadastrar - Idiomas");
+            this.dispose();
+        } else {
+            for (int i = 0; i < list.size(); i++) {
+                cbIdioma.addItem(list.get(i).getIdioma());
+            }
+        }
+    }
 
-        for (int i = 0; i < idiomas.size(); i++) {
-            cbIdioma.addItem(idiomas.get(i));
+    //metodo para popular combo idiomas
+    public void popularComboDisciplina() {
+
+        DisciplinaDAO dDAO = new DisciplinaDAO();
+        listD = dDAO.getDisciplinas(1);
+        if (listD.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Cadastre pelo menos uma disciplina em:"
+                    + "\nMenu - Cadastrar - Disciplina");
+            this.dispose();
+        } else {
+            for (int i = 0; i < listD.size(); i++) {
+                cbDisciplina.addItem(listD.get(i).getNomeDisciplina());
+            }
         }
     }
 
@@ -65,11 +123,24 @@ public class frmAluno extends javax.swing.JFrame {
         cbIdioma = new javax.swing.JComboBox();
         btnAdicionarIdioma = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblIdioma = new javax.swing.JTable();
+        tabelaIdioma = new javax.swing.JTable();
         btnLocalizar = new javax.swing.JButton();
         lblIdade1 = new javax.swing.JLabel();
         txtCidade = new javax.swing.JTextField();
         txtProntuario = new javax.swing.JFormattedTextField();
+        lblIdade2 = new javax.swing.JLabel();
+        lblIdade3 = new javax.swing.JLabel();
+        cbUf = new javax.swing.JComboBox();
+        cbPais = new javax.swing.JComboBox();
+        btnRemoverIdioma = new javax.swing.JButton();
+        lblIdioma1 = new javax.swing.JLabel();
+        cbDisciplina = new javax.swing.JComboBox();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tabelaDisciplinas = new javax.swing.JTable();
+        btnAdicionarDisciplina = new javax.swing.JButton();
+        btnRemoverDisciplina = new javax.swing.JButton();
+        btnIdioma = new javax.swing.JButton();
+        btnDisciplina = new javax.swing.JButton();
         btnInserir = new javax.swing.JButton();
         btnAlterar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
@@ -113,14 +184,13 @@ public class frmAluno extends javax.swing.JFrame {
 
         btnAdicionarIdioma.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         btnAdicionarIdioma.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/plus.png"))); // NOI18N
-        btnAdicionarIdioma.setText("Adicionar");
         btnAdicionarIdioma.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAdicionarIdiomaActionPerformed(evt);
             }
         });
 
-        tblIdioma.setModel(new javax.swing.table.DefaultTableModel(
+        tabelaIdioma.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -136,7 +206,7 @@ public class frmAluno extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblIdioma);
+        jScrollPane1.setViewportView(tabelaIdioma);
 
         btnLocalizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Search.png"))); // NOI18N
         btnLocalizar.setText("Localizar");
@@ -154,48 +224,154 @@ public class frmAluno extends javax.swing.JFrame {
         txtProntuario.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         txtProntuario.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
 
+        lblIdade2.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        lblIdade2.setText("UF:");
+
+        lblIdade3.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        lblIdade3.setText("País:");
+
+        cbUf.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" }));
+
+        cbPais.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Brasil" }));
+
+        btnRemoverIdioma.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        btnRemoverIdioma.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/minus.png"))); // NOI18N
+        btnRemoverIdioma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoverIdiomaActionPerformed(evt);
+            }
+        });
+
+        lblIdioma1.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        lblIdioma1.setText("Disciplina:");
+
+        tabelaDisciplinas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Disciplina"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tabelaDisciplinas);
+
+        btnAdicionarDisciplina.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        btnAdicionarDisciplina.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/plus.png"))); // NOI18N
+        btnAdicionarDisciplina.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarDisciplinaActionPerformed(evt);
+            }
+        });
+
+        btnRemoverDisciplina.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        btnRemoverDisciplina.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/minus.png"))); // NOI18N
+        btnRemoverDisciplina.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoverDisciplinaActionPerformed(evt);
+            }
+        });
+
+        btnIdioma.setText("...");
+        btnIdioma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIdiomaActionPerformed(evt);
+            }
+        });
+
+        btnDisciplina.setText("...");
+        btnDisciplina.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDisciplinaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlAlunoLayout = new javax.swing.GroupLayout(pnlAluno);
         pnlAluno.setLayout(pnlAlunoLayout);
         pnlAlunoLayout.setHorizontalGroup(
             pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlAlunoLayout.createSequentialGroup()
-                .addGap(56, 56, 56)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(pnlAlunoLayout.createSequentialGroup()
                 .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlAlunoLayout.createSequentialGroup()
-                        .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlAlunoLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(lblProntuario))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAlunoLayout.createSequentialGroup()
-                                .addGap(12, 12, 12)
-                                .addComponent(lblNome)))
-                        .addGap(18, 18, 18)
-                        .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlAlunoLayout.createSequentialGroup()
-                                .addComponent(txtProntuario)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnLocalizar)
-                                .addGap(9, 9, 9))))
+                        .addContainerGap()
+                        .addComponent(lblProntuario))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAlunoLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(lblNome)))
+                .addGap(18, 18, 18)
+                .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlAlunoLayout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblIdioma)
-                            .addComponent(lblIdade)
-                            .addComponent(lblIdade1))
+                        .addComponent(txtProntuario)
                         .addGap(18, 18, 18)
-                        .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtIdade, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnLocalizar)
+                        .addGap(9, 9, 9))))
+            .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlAlunoLayout.createSequentialGroup()
+                    .addGap(60, 60, 60)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(38, 38, 38))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAlunoLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(pnlAlunoLayout.createSequentialGroup()
+                            .addGap(42, 42, 42)
+                            .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(lblIdade)
+                                .addComponent(lblIdade1)))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlAlunoLayout.createSequentialGroup()
+                            .addGap(23, 23, 23)
+                            .addComponent(lblIdioma)))
+                    .addGap(18, 18, 18)
+                    .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtCidade, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlAlunoLayout.createSequentialGroup()
+                                .addComponent(txtIdade, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(lblIdade2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cbUf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(19, 19, 19)
+                                .addComponent(lblIdade3)
+                                .addGap(18, 18, 18)
+                                .addComponent(cbPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(pnlAlunoLayout.createSequentialGroup()
+                            .addGap(53, 53, 53)
+                            .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btnRemoverIdioma)
+                                .addComponent(btnIdioma, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(28, 28, 28)
                             .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addGroup(pnlAlunoLayout.createSequentialGroup()
-                                    .addComponent(cbIdioma, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblIdioma1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(cbDisciplina, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(pnlAlunoLayout.createSequentialGroup()
+                                    .addGap(54, 54, 54)
+                                    .addComponent(btnAdicionarDisciplina)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnAdicionarIdioma))
-                                .addComponent(txtCidade, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(63, 63, 63))
+                                    .addComponent(btnRemoverDisciplina)))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnDisciplina, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addContainerGap())
+                .addGroup(pnlAlunoLayout.createSequentialGroup()
+                    .addGap(61, 61, 61)
+                    .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(cbIdioma, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(pnlAlunoLayout.createSequentialGroup()
+                            .addComponent(btnAdicionarIdioma)
+                            .addGap(83, 83, 83)))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         pnlAlunoLayout.setVerticalGroup(
             pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -212,18 +388,40 @@ public class frmAluno extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblIdade)
-                    .addComponent(txtIdade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtIdade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblIdade2)
+                        .addComponent(lblIdade3)
+                        .addComponent(cbUf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(14, 14, 14)
                 .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblIdade1))
                 .addGap(18, 18, 18)
-                .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbIdioma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblIdioma)
-                    .addComponent(btnAdicionarIdioma, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlAlunoLayout.createSequentialGroup()
+                        .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cbIdioma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblIdioma)
+                            .addComponent(btnIdioma))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAdicionarIdioma, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRemoverIdioma, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlAlunoLayout.createSequentialGroup()
+                        .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cbDisciplina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblIdioma1)
+                            .addComponent(btnDisciplina))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(pnlAlunoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAdicionarDisciplina, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRemoverDisciplina, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -264,31 +462,31 @@ public class frmAluno extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlAluno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnInserir)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAlterar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnCancelar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnSalvar)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(btnInserir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnAlterar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCancelar)
+                .addGap(18, 18, 18)
+                .addComponent(btnSalvar)
+                .addContainerGap(43, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(pnlAluno, javax.swing.GroupLayout.PREFERRED_SIZE, 543, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pnlAluno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnInserir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAlterar)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSalvar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGap(23, 23, 23))
         );
 
         pack();
@@ -320,33 +518,66 @@ public class frmAluno extends javax.swing.JFrame {
         txtCidade.setEnabled(false);
         txtIdade.setEnabled(false);
         cbIdioma.setEnabled(false);
+        cbPais.setEnabled(false);
+        cbUf.setEnabled(false);
+        btnRemoverIdioma.setEnabled(false);
+        btnIdioma.setEnabled(false);
+        btnAdicionarDisciplina.setEnabled(false);
+        btnRemoverDisciplina.setEnabled(false);
+        btnDisciplina.setEnabled(false);
+        cbDisciplina.setEnabled(false);
     }
 
     public void habilitaCampos() {
-        txtProntuario.setEnabled(true);
+        txtProntuario.setEnabled(false);
         txtNome.setEnabled(true);
         txtCidade.setEnabled(true);
         txtIdade.setEnabled(true);
         cbIdioma.setEnabled(true);
         btnCancelar.setEnabled(true);
         btnAdicionarIdioma.setEnabled(true);
+        btnIdioma.setEnabled(true);
         btnSalvar.setEnabled(true);
         btnLocalizar.setEnabled(false);
+        cbPais.setEnabled(true);
+        cbUf.setEnabled(true);
+        btnRemoverIdioma.setEnabled(true);        
+        btnAdicionarDisciplina.setEnabled(true);
+        btnRemoverDisciplina.setEnabled(true);
+        btnDisciplina.setEnabled(true);
+        cbDisciplina.setEnabled(true);
     }
 
     private void btnAdicionarIdiomaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarIdiomaActionPerformed
+
         //recupera o idioma e insere
         String idioma = String.valueOf(cbIdioma.getSelectedItem());
         int id = cbIdioma.getSelectedIndex();//recupera o id do item inserido
         cbIdioma.removeItemAt(id);//remove ele do combo
-
+               
         Object[] obj = {idioma};
-        tIdiomas = (DefaultTableModel) tblIdioma.getModel();
-        tIdiomas.addRow(obj);
+        tIdiomas = (DefaultTableModel) tabelaIdioma.getModel();
+        //tIdiomas.addRow(obj);
 
+         for (int i = 0; i < tIdiomas.getRowCount(); i++) 
+         {
+            if (tabelaIdioma.getValueAt(i, 0).toString().equals(idioma)) 
+            {
+                JOptionPane.showMessageDialog(null, "Idioma já Adicionado!");
+                return;
+            }   
+         }
+         
+         tIdiomas.addRow(obj);
+         /*for (int i = 0; i < list.size(); i++) 
+         {
+            tIdiomas.addRow(obj);
+         }*/
+         
         //verifica se existe algum item no combo, caso não ele é desabilitado
         int qtde_itens_combo = cbIdioma.getItemCount();
-        if (qtde_itens_combo == 0) {
+        if (qtde_itens_combo == 0) 
+        {
             cbIdioma.setEnabled(false);
             btnAdicionarIdioma.setEnabled(false);
         }
@@ -360,37 +591,69 @@ public class frmAluno extends javax.swing.JFrame {
         txtCidade.setText("");
         cbIdioma.setEnabled(true);
         cbIdioma.setSelectedIndex(0);
+        cbPais.setSelectedIndex(0);
     }
 
     private void btnInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirActionPerformed
         habilitaCampos();
+        txtNome.requestFocus();
         btnInserir.setEnabled(false);
     }//GEN-LAST:event_btnInserirActionPerformed
 
-    public void popularTabela(List<RelacionamentoVO> listaIdiomas) {
-        tIdiomas = (DefaultTableModel) tblIdioma.getModel();
+    public void popularTabela(List<Relacionamento> listaIdiomas) {
+        tIdiomas = (DefaultTableModel) tabelaIdioma.getModel();
 
         while (tIdiomas.getRowCount() > 0) {
             tIdiomas.removeRow(0);
         }
 
-        String[] linhas = new String[]{null, null};
+        String[] linhas = new String[]{
+            null, null
+        };
 
         for (int i = 0; i < listaIdiomas.size(); i++) {
             tIdiomas.addRow(linhas);
             tIdiomas.setValueAt(listaIdiomas.get(i).getIdioma_id_idioma().getIdioma(), i, 0);
-            tblIdioma.setRowHeight(30);
+            tabelaIdioma.setRowHeight(30);
+        }
+    }
+
+    public void popularTabelaD(List<RelacionamentoDisciplina> listaDiciplinas) {
+        tDisciplinas = (DefaultTableModel) tabelaDisciplinas.getModel();
+
+        while (tDisciplinas.getRowCount() > 0) {
+            tDisciplinas.removeRow(0);
+        }
+
+        String[] linhas = new String[]{
+            null, null
+        };
+
+        for (int i = 0; i < listaDiciplinas.size(); i++) {
+            tDisciplinas.addRow(linhas);
+            tDisciplinas.setValueAt(listaDiciplinas.get(i).getIdDisciplina().getNomeDisciplina(), i, 0);
+            tabelaDisciplinas.setRowHeight(30);
         }
     }
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        cbIdioma.removeAllItems();
+        cbDisciplina.removeAllItems();
+        
         popularComboIdioma();
         limparCampos();
         btnLocalizar.setEnabled(true);
         //remover os dados da jtable
-        if (tblIdioma.getRowCount() != 0) {
+        if (tabelaIdioma.getRowCount() != 0) {
             while (tIdiomas.getRowCount() > 0) {
                 tIdiomas.removeRow(0);
+            }
+        }
+
+        //remover os dados da jtable
+        if (tabelaDisciplinas.getRowCount() > 0) {
+            while (tDisciplinas.getRowCount() > 0) {
+                tDisciplinas.removeRow(0);
             }
         }
         desabilitaCampos();
@@ -401,15 +664,22 @@ public class frmAluno extends javax.swing.JFrame {
 
     public void pesquisarDados() {
         String id_prontuario = txtProntuario.getText();
-        RelacionamentoMDAO relDAO = new RelacionamentoMDAO();
-        List<RelacionamentoVO> listaDeIdiomasProntuario;
+        RelacionamentoDAO relDAO = new RelacionamentoDAO();
+        List<Relacionamento> listaDeIdiomasProntuario;
         listaDeIdiomasProntuario = relDAO.listaDeIdiomas(id_prontuario);
         popularTabela(listaDeIdiomasProntuario);
     }
 
+    public void pesquisarDisciplinas() {
+        String id_prontuario = txtProntuario.getText();
+        RelacionamentoDisciplinaDAO rdDAO = new RelacionamentoDisciplinaDAO();
+        List<RelacionamentoDisciplina> listaDeDisciplinasUsuarios;
+        listaDeDisciplinasUsuarios = rdDAO.listaDeDisciplinas(id_prontuario);
+        popularTabelaD(listaDeDisciplinasUsuarios);
+    }
+
     private void btnLocalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocalizarActionPerformed
 
-        txtProntuario.setEnabled(true);
         //BUSCA O USUARIO PELO PRONTUARIO
         String prontuario = JOptionPane.showInputDialog("Digite o prontuário do Aluno");
         txtProntuario.setText(prontuario);
@@ -418,16 +688,16 @@ public class frmAluno extends javax.swing.JFrame {
             //NAO ENCONTROU
             desabilitaCampos();
             desablitaBotoes();
-        } else if(prontuario.length() > 0) {
-            //BUSCA O USUARIO
+        } else if (prontuario.length() > 0) {
+            //BUSCA O ALUNO
             int prontuario_id = Integer.parseInt(prontuario);
-            UsuarioMDAO uDAO = new UsuarioMDAO();
-            UsuarioVO uVO;
+            UsuarioDAO uDAO = new UsuarioDAO();
+            Usuario uVO;
             uVO = uDAO.getUsuario(prontuario_id);
 
             //BUSCA O ALUNO
-            AlunoMDAO aDAO = new AlunoMDAO();
-            AlunoVO aVO;
+            AlunoDAO aDAO = new AlunoDAO();
+            Aluno aVO;
             aVO = aDAO.getAluno(prontuario_id);
 
             if (uVO != null) {
@@ -436,90 +706,127 @@ public class frmAluno extends javax.swing.JFrame {
                 txtNome.setText(uVO.getNome());
                 txtIdade.setText(String.valueOf(uVO.getIdade()));
                 txtCidade.setText(aVO.getCidade());
+                cbUf.setSelectedItem(aVO.getUf());
 
-                //PREENCHER A TABELA COM OS REFERENTES IDIOMAS
+                //PREENCHER A TABELA COM OS REFERENTES IDIOMAS E DISCIPLINAS
                 pesquisarDados();
+                pesquisarDisciplinas();
                 //habilita os campos para alterar
                 txtProntuario.setEnabled(false);
                 txtNome.setEnabled(true);
                 txtCidade.setEnabled(true);
                 txtIdade.setEnabled(true);
-                cbIdioma.setEnabled(false);
+                cbIdioma.setEnabled(true);
                 btnCancelar.setEnabled(true);
-                btnAdicionarIdioma.setEnabled(false);
+                btnAdicionarIdioma.setEnabled(true);
                 btnSalvar.setEnabled(false);
                 btnLocalizar.setEnabled(false);
                 btnAlterar.setEnabled(true);
                 btnInserir.setEnabled(false);
+                btnRemoverIdioma.setEnabled(true);
+                cbUf.setEnabled(true);
+                cbPais.setEnabled(true);
+                cbDisciplina.setEnabled(true);
+                btnAdicionarDisciplina.setEnabled(true);
+                btnRemoverDisciplina.setEnabled(true);
                 //
-            } else  {
+            } else {
                 //NAO ENCONTROU
                 JOptionPane.showMessageDialog(null, "Prontuário não encontrado, verifique os dados!!!");
                 desabilitaCampos();
                 desablitaBotoes();
                 txtProntuario.setText("");
             }
-        }else{
-             JOptionPane.showMessageDialog(null, "Preencha os dados corretamente!!!");
-                desabilitaCampos();
-                desablitaBotoes();
-                txtProntuario.setText("");
+        } else {
+            JOptionPane.showMessageDialog(null, "Preencha os dados corretamente!!!");
+            desabilitaCampos();
+            desablitaBotoes();
+            txtProntuario.setText("");
         }
     }//GEN-LAST:event_btnLocalizarActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // recuperar os dados para cadastrar
-        String prontuario = txtProntuario.getText();
+        cbIdioma.removeAllItems();
+        cbDisciplina.removeAllItems();
+        // recuperar os dados para cadastrar        
         String nome = txtNome.getText();
         String idade = txtIdade.getText();
         String cidade = txtCidade.getText();
+        String uf = (String) cbUf.getSelectedItem();
+        String pais = (String) cbPais.getSelectedItem();
 
         //validar os dados para cadastrar
-        if (prontuario.isEmpty() || nome.isEmpty() || idade.isEmpty() || cidade.isEmpty()) {
+        if (nome.isEmpty() || idade.isEmpty() || cidade.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Existem campos com preenchimento incorreto!!!");
         } else {
           //manda os dados para cadastro
 
             //CADASTRAR O USUÁRIO*************************************
-            UsuarioVO uVO = new UsuarioVO();
-            UsuarioMDAO uDAO = new UsuarioMDAO();
+            Usuario uVO = new Usuario();
+            UsuarioDAO uDAO = new UsuarioDAO();
+            int codigo = uDAO.AutoIncremento();
 
-            uVO.setProntuario(prontuario);
+            uVO.setProntuario(String.valueOf(codigo));
             uVO.setNome(nome);
             uVO.setIdade(Integer.parseInt(idade));
 
             //CADASTRAR ALUNO****************************************************
-            AlunoVO alunoVO = new AlunoVO();
-            AlunoMDAO aDAO = new AlunoMDAO();
+            Aluno alunoVO = new Aluno();
+            AlunoDAO aDAO = new AlunoDAO();
 
-            alunoVO.setUsuario_prontuario(prontuario);
+            alunoVO.setProntuario(String.valueOf(codigo));
             alunoVO.setCidade(cidade);
+            alunoVO.setUf(uf);
+            alunoVO.setPais(pais);
 
             // FAZ O INSERT DO USUARIO E DO ALUNO
             if (uDAO.inserir(uVO) == true && aDAO.inserir(alunoVO) == true) {
 
                 //percorrer a tabela para salvar os idiomas
-                //recupera a qtde de linhas da tabela
-                String idiomas = "";
-                if (tblIdioma.getRowCount() == 0) {
+                //recupera a qtde de linhas da tabela                
+                if (tabelaIdioma.getRowCount() == 0) {
                     //nao tem idioma cadastrado
                 } else {
-                    for (int i = 0; i < tblIdioma.getRowCount(); i++) {
+                    for (int i = 0; i < tabelaIdioma.getRowCount(); i++) {
                         //CADASTRA O RELACIONAMENTO
-                        IdiomaVO iVO;
-                        IdiomaMDAO iDAO = new IdiomaMDAO();
+                        Idioma iVO;
+                        IdiomaDAO iDAO = new IdiomaDAO();
 
-                        RelacionamentoVO relVO = new RelacionamentoVO();
-                        RelacionamentoMDAO relDAO = new RelacionamentoMDAO();
+                        Relacionamento relVO = new Relacionamento();
+                        RelacionamentoDAO relDAO = new RelacionamentoDAO();
 
                         //AQUI ESTA RECUPERANDO O ID DO IDIOMA PELO NOME
-                        iVO = iDAO.getIdioma(String.valueOf(tblIdioma.getValueAt(i, 0)));
+                        iVO = iDAO.getIdioma(String.valueOf(tabelaIdioma.getValueAt(i, 0)));
 
                         relVO.setIdioma_id_idioma(iVO);
 
-                        relVO.setUsuario_prontuario(prontuario);
+                        relVO.setUsuario_prontuario(String.valueOf(codigo));
                         //JOptionPane.showMessageDialog(null, "id idioma = " + iVO.getId_idioma() + " prontuario " + prontuario);
                         relDAO.inserirRelacionamento(relVO);
+                    }
+                }
+
+                //percorrer a tabela para salvar o relacionamento das disciplinas
+                //recupera a qtde de linhas da tabela                
+                if (tabelaDisciplinas.getRowCount() == 0) {
+                    //nao tem disciplina cadastrada
+                } else {
+
+                    for (int i = 0; i < tabelaDisciplinas.getRowCount(); i++) {
+                        //CADASTRA O RELACIONAMENTO
+                        Disciplina d;
+                        DisciplinaDAO dDAO = new DisciplinaDAO();
+
+                        RelacionamentoDisciplina relD = new RelacionamentoDisciplina();
+                        RelacionamentoDisciplinaDAO relDAO = new RelacionamentoDisciplinaDAO();
+
+                        //AQUI ESTA RECUPERANDO O ID DA DISCIPLINA PELO NOME
+                        d = dDAO.getDisciplina(String.valueOf(tabelaDisciplinas.getValueAt(i, 0)));
+
+                        relD.setIdDisciplina(d);
+                        relD.setProntuario(String.valueOf(codigo));
+                        //JOptionPane.showMessageDialog(null, "id idioma = " + iVO.getId_idioma() + " prontuario " + prontuario);                        
+                        relDAO.inserirRelacionamentoD(relD);
                     }
                 }
 
@@ -532,9 +839,16 @@ public class frmAluno extends javax.swing.JFrame {
                 btnInserir.setEnabled(true);
 
                 //remover os dados da jtable
-                if (tblIdioma.getRowCount() > 0) {
+                if (tabelaIdioma.getRowCount() > 0) {
                     while (tIdiomas.getRowCount() > 0) {
                         tIdiomas.removeRow(0);
+                    }
+                }
+
+                //remover os dados da jtable
+                if (tabelaDisciplinas.getRowCount() > 0) {
+                    while (tDisciplinas.getRowCount() > 0) {
+                        tDisciplinas.removeRow(0);
                     }
                 }
             } else {
@@ -547,9 +861,16 @@ public class frmAluno extends javax.swing.JFrame {
                 btnInserir.setEnabled(true);
 
                 //remover os dados da jtable
-                if (tblIdioma.getRowCount() != 0) {
+                if (tabelaIdioma.getRowCount() != 0) {
                     while (tIdiomas.getRowCount() > 0) {
                         tIdiomas.removeRow(0);
+                    }
+                }
+
+                //remover os dados da jtable
+                if (tabelaDisciplinas.getRowCount() > 0) {
+                    while (tDisciplinas.getRowCount() > 0) {
+                        tDisciplinas.removeRow(0);
                     }
                 }
             }
@@ -563,6 +884,8 @@ public class frmAluno extends javax.swing.JFrame {
         String nome = txtNome.getText();
         String idade = txtIdade.getText();
         String cidade = txtCidade.getText();
+        String uf = (String) cbUf.getSelectedItem();
+        String pais = (String) cbPais.getSelectedItem();
 
         //validar os dados para cadastrar
         if (prontuario.isEmpty() || nome.isEmpty() || idade.isEmpty() || cidade.isEmpty()) {
@@ -570,48 +893,95 @@ public class frmAluno extends javax.swing.JFrame {
         } else {
 
             //QUANDO FOR UMA ALTERAÇÃO, VAI FAZER UPDATE DOS DADOS
-            UsuarioVO uVO = new UsuarioVO();
-            UsuarioMDAO uDAO = new UsuarioMDAO();
+            Usuario uVO = new Usuario();
+            UsuarioDAO uDAO = new UsuarioDAO();
 
             uVO.setProntuario(prontuario);
             uVO.setNome(nome);
             uVO.setIdade(Integer.parseInt(idade));
 
-            AlunoVO alunoVO = new AlunoVO();
-            AlunoMDAO aDAO = new AlunoMDAO();
+            Aluno alunoVO = new Aluno();
+            AlunoDAO aDAO = new AlunoDAO();
 
-            alunoVO.setUsuario_prontuario(prontuario);
+            alunoVO.setProntuario(prontuario);
             alunoVO.setCidade(cidade);
+            alunoVO.setUf(uf);
+            alunoVO.setPais(pais);
 
             if (uDAO.update(uVO) == true && aDAO.update(alunoVO) == true) {
-                //ALTUALIZAR OS IDIOMAS
-              /*
-                 for (int i = 0; i < tblIdioma.getRowCount(); i++) {
-                 //ATUALIZA O RELACIONAMENTO
-                 IdiomaVO iVO;
-                 IdiomaMDAO iDAO = new IdiomaMDAO();
 
-                 RelacionamentoVO relVO = new RelacionamentoVO();
-                 RelacionamentoMDAO relDAO = new RelacionamentoMDAO();
+                //remover os dados da table antes de atualizar
+                RelacionamentoDAO rDAO = new RelacionamentoDAO();
+                try {
+                    rDAO.deletar(prontuario);
+                    //percorrer a tabela para salvar os idiomas
+                    //recupera a qtde de linhas da tabela                
+                    if (tabelaIdioma.getRowCount() == 0) {
+                        //nao tem idioma cadastrado
+                    } else {
+                        for (int i = 0; i < tabelaIdioma.getRowCount(); i++) {
+                            //CADASTRA O RELACIONAMENTO
+                            Idioma iVO;
+                            IdiomaDAO iDAO = new IdiomaDAO();
 
-                 //AQUI ESTA RECUPERANDO O ID DO IDIOMA PELO NOME
-                 iVO = iDAO.getIdioma(String.valueOf(tblIdioma.getValueAt(i, 0)));
+                            Relacionamento relVO = new Relacionamento();
+                            RelacionamentoDAO relDAO = new RelacionamentoDAO();
 
-                 relVO.setIdioma_id_idioma(iVO);
+                            //AQUI ESTA RECUPERANDO O ID DO IDIOMA PELO NOME
+                            iVO = iDAO.getIdioma(String.valueOf(tabelaIdioma.getValueAt(i, 0)));
 
-                 relVO.setUsuario_prontuario(prontuario);
-                 //JOptionPane.showMessageDialog(null, "id idioma = " + iVO.getId_idioma() + " prontuario " + prontuario);
-                 relDAO.inserirRelacionamento(relVO);
-                 }*/
+                            relVO.setIdioma_id_idioma(iVO);
 
-                JOptionPane.showMessageDialog(null, "Dados atualizados com sucesso!!!");
+                            relVO.setUsuario_prontuario(String.valueOf(prontuario));
+                            //JOptionPane.showMessageDialog(null, "id idioma = " + iVO.getId_idioma() + " prontuario " + prontuario);
+                            relDAO.inserirRelacionamento(relVO);
+                        }
+                    }
+
+                    //atualizar as disciplinas
+                    RelacionamentoDisciplinaDAO rdDAO = new RelacionamentoDisciplinaDAO();
+                    rdDAO.deletar(prontuario);
+                    //percorrer a tabela para salvar as disciplinsa
+                    //recupera a qtde de linhas da tabela                
+                    if (tabelaIdioma.getRowCount() == 0) {
+                        //nao tem disciplina cadastrada
+                    } else {
+                        for (int i = 0; i < tabelaDisciplinas.getRowCount(); i++) {
+                            //CADASTRA O RELACIONAMENTO DAS DICIPLINAS                           
+                            Disciplina d;
+                            DisciplinaDAO dDAO = new DisciplinaDAO();
+
+                            RelacionamentoDisciplina relD = new RelacionamentoDisciplina();
+                            RelacionamentoDisciplinaDAO relDAO = new RelacionamentoDisciplinaDAO();
+
+                            //AQUI ESTA RECUPERANDO O ID DA DISCIPLINA PELO NOME
+                            d = dDAO.getDisciplina(String.valueOf(tabelaDisciplinas.getValueAt(i, 0)));
+
+                            relD.setIdDisciplina(d);
+                            relD.setProntuario(prontuario);
+
+                            //JOptionPane.showMessageDialog(null, "id idioma = " + iVO.getId_idioma() + " prontuario " + prontuario);
+                            relDAO.inserirRelacionamentoD(relD);
+                        }
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Dados atualizados com sucesso!!!");
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, ex, "Erro ao atualizar idiomas", JOptionPane.ERROR_MESSAGE);
+                }
                 limparCampos();
                 desabilitaCampos();
                 desablitaBotoes();
                 //remover os dados da jtable
-                if (tblIdioma.getRowCount() != 0) {
+                if (tabelaIdioma.getRowCount() != 0) {
                     while (tIdiomas.getRowCount() > 0) {
                         tIdiomas.removeRow(0);
+                    }
+                }
+                 //remover os dados da jtable
+                if (tabelaDisciplinas.getRowCount() > 0) {
+                    while (tDisciplinas.getRowCount() > 0) {
+                        tDisciplinas.removeRow(0);
                     }
                 }
                 btnLocalizar.setEnabled(true);
@@ -627,11 +997,110 @@ public class frmAluno extends javax.swing.JFrame {
                         tIdiomas.removeRow(0);
                     }
                 }
+                 //remover os dados da jtable
+                if (tabelaDisciplinas.getRowCount() > 0) {
+                    while (tDisciplinas.getRowCount() > 0) {
+                        tDisciplinas.removeRow(0);
+                    }
+                }
                 btnLocalizar.setEnabled(true);
                 btnInserir.setEnabled(true);
             }
         }
     }//GEN-LAST:event_btnAlterarActionPerformed
+
+  private void btnRemoverIdiomaActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnRemoverIdiomaActionPerformed
+  {//GEN-HEADEREND:event_btnRemoverIdiomaActionPerformed
+      if (tabelaIdioma.getRowCount() == 0)
+      {
+        JOptionPane.showMessageDialog(null, "Não há Idioma para remover!!!");
+      }
+      else
+      {
+        btnRemoverIdioma.setEnabled(true);
+        if (tabelaIdioma.getSelectedRowCount() == 0) 
+        {
+            JOptionPane.showMessageDialog(null, "Clique no Idioma para remover!!!");
+        } 
+        else 
+        {
+            int idioma = tabelaIdioma.getSelectedRow();//recupera o id do item inserido
+            cbIdioma.addItem(tabelaIdioma.getValueAt(idioma, 0)); //linha, coluna
+        
+            tIdiomas.removeRow(idioma);
+            cbIdioma.setEnabled(true);
+            btnAdicionarIdioma.setEnabled(true);
+        }
+      }
+  }//GEN-LAST:event_btnRemoverIdiomaActionPerformed
+
+    private void btnAdicionarDisciplinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarDisciplinaActionPerformed
+        //recupera o idioma e insere
+        String disciplina = String.valueOf(cbDisciplina.getSelectedItem());
+        int id = cbDisciplina.getSelectedIndex();//recupera o id do item inserido
+        cbDisciplina.removeItemAt(id);//remove ele do combo
+               
+        Object[] obj = {disciplina};
+        tDisciplinas = (DefaultTableModel) tabelaDisciplinas.getModel();
+        //tIdiomas.addRow(obj);
+
+         for (int i = 0; i < tDisciplinas.getRowCount(); i++) 
+         {
+            if (tabelaDisciplinas.getValueAt(i, 0).toString().equals(disciplina)) 
+            {
+                JOptionPane.showMessageDialog(null, "Disciplina já Adicionada!");
+                return;
+            }   
+         }
+         
+         tDisciplinas.addRow(obj);
+         /*for (int i = 1; i < listD.size(); i++) 
+         {
+            tDisciplinas.addRow(obj);
+         }*/
+         
+        //verifica se existe algum item no combo, caso não ele é desabilitado
+        int qtde_itens_combo = cbDisciplina.getItemCount();
+        if (qtde_itens_combo == 0) 
+        {
+            cbDisciplina.setEnabled(false);
+            btnAdicionarDisciplina.setEnabled(false);
+        }
+    }//GEN-LAST:event_btnAdicionarDisciplinaActionPerformed
+
+    private void btnRemoverDisciplinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverDisciplinaActionPerformed
+       if (tabelaDisciplinas.getRowCount() == 0)
+      {
+        JOptionPane.showMessageDialog(null, "Não há Disciplina para remover!!!");
+      }
+      else
+      {
+        btnRemoverDisciplina.setEnabled(true);
+        if (tabelaDisciplinas.getSelectedRowCount() == 0) 
+        {
+            JOptionPane.showMessageDialog(null, "Clique na Disciplina para remover!!!");
+        } 
+        else 
+        {
+            int disciplina = tabelaDisciplinas.getSelectedRow();//recupera o id do item inserido
+            cbDisciplina.addItem(tabelaDisciplinas.getValueAt(disciplina, 0)); //linha, coluna
+        
+            tDisciplinas.removeRow(disciplina);
+            cbDisciplina.setEnabled(true);
+            btnAdicionarDisciplina.setEnabled(true);
+        }
+      }
+    }//GEN-LAST:event_btnRemoverDisciplinaActionPerformed
+
+    private void btnIdiomaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIdiomaActionPerformed
+        // TODO add your handling code here:
+        new frmIdioma().setVisible(true);
+    }//GEN-LAST:event_btnIdiomaActionPerformed
+
+    private void btnDisciplinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisciplinaActionPerformed
+        // TODO add your handling code here:
+        new frmDisciplina().setVisible(true);
+    }//GEN-LAST:event_btnDisciplinaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -669,23 +1138,36 @@ public class frmAluno extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdicionarDisciplina;
     private javax.swing.JButton btnAdicionarIdioma;
     private javax.swing.JButton btnAlterar;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnDisciplina;
+    private javax.swing.JButton btnIdioma;
     private javax.swing.JButton btnInserir;
     private javax.swing.JButton btnLocalizar;
+    private javax.swing.JButton btnRemoverDisciplina;
+    private javax.swing.JButton btnRemoverIdioma;
     private javax.swing.JButton btnSalvar;
+    private javax.swing.JComboBox cbDisciplina;
     private javax.swing.JComboBox cbIdioma;
+    private javax.swing.JComboBox cbPais;
+    private javax.swing.JComboBox cbUf;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblIdade;
     private javax.swing.JLabel lblIdade1;
+    private javax.swing.JLabel lblIdade2;
+    private javax.swing.JLabel lblIdade3;
     private javax.swing.JLabel lblIdioma;
+    private javax.swing.JLabel lblIdioma1;
     private javax.swing.JLabel lblNome;
     private javax.swing.JLabel lblProntuario;
     private javax.swing.JPanel pnlAluno;
-    private javax.swing.JTable tblIdioma;
+    private javax.swing.JTable tabelaDisciplinas;
+    private javax.swing.JTable tabelaIdioma;
     private javax.swing.JTextField txtCidade;
     private javax.swing.JTextField txtIdade;
     private javax.swing.JTextField txtNome;

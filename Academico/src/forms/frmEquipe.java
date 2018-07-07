@@ -10,19 +10,19 @@ package forms;
  *
  * @author Janaina & Roberto
  */
-public class frmSobre extends javax.swing.JFrame {
+public class frmEquipe extends javax.swing.JFrame {
 
     /**
      * Creates new form FormSobre
      */
     
-    private static frmSobre instance;
+    private static frmEquipe instance;
     
-    public static frmSobre getInstance()
+    public static frmEquipe getInstance()
     {
         if(instance == null)
       {
-        instance = new frmSobre();
+        instance = new frmEquipe();
         
       }
        
@@ -30,7 +30,8 @@ public class frmSobre extends javax.swing.JFrame {
         
     }
     
-    frmSobre() {
+    frmEquipe() 
+    {
         initComponents();
     }
 
@@ -43,66 +44,37 @@ public class frmSobre extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblLogo = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea = new javax.swing.JTextArea();
-        btnEquipe = new java.awt.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(".: Sobre :.");
         setResizable(false);
 
-        lblLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logo ADS.gif"))); // NOI18N
-        lblLogo.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
         jTextArea.setEditable(false);
+        jTextArea.setBackground(new java.awt.Color(204, 255, 204));
         jTextArea.setColumns(20);
         jTextArea.setFont(new java.awt.Font("Monospaced", 1, 13)); // NOI18N
         jTextArea.setRows(5);
-        jTextArea.setText("\t\t\tSistema Acadêmico - versão 2.0\n\n\n\nCopyright(C) 2015.\nTodos os direitos reservados.");
-        jTextArea.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jTextArea.setText("\t\t................................\n\t\t: EQUIPE do Projeto de Sistema :\n\t\t................................\n_____________________________________________________________________\n\tGERENTE de PROJETO:\n\t\t\t\t- Alexandre;\n_____________________________________________________________________\n\n\tANÁLISE:\n\t\t\t\t- Bestriz;\n\t\t\t\t- Letícia;\t\n\t\t\t\t- Pâmela;\n\t\t\t\t- Sâmia;\n_____________________________________________________________________\n\t\n\tBANCO DE DADOS:\n\t\t\t\t- Ewerton;\t\t\n\t\t\t\t- Fábio;\n\t\t\t\t- Michele;\n\t\t\t\t- Vitor Fabbro;\n\t\t\t\t- Washington\n_____________________________________________________________________\n\n\tGERENTE de DESENVOLVIMENTO:\n\t\t\t\t- Ewerton;\n_____________________________________________________________________\n\n\tDESENVOLVEDORES:\n\n\t\t[Requisito 1]\n\t\t\t\t- Jonatas;\n\t\t\t\t- Luis;\n\t\t\t\t- Tainá;\n\n\t\t[Requisito 2]\n\t\t\t\t- Cristiane;\n\t\t\t\t- Jéssica;\n\t\t\t\t- Moisés;\n\n\t\t[Requisito 3]\n\t\t\t\t- Alexandre;\n\t\t\t\t- Janaina;\n\t\t\t\t- Pedro;\n\t\t\t\t- Roberto;\n\t\n\t\t[Requisito 4]\n\t\t\t\t- Anderson;\n\t\t\t\t- Lucas;\n\t\t\t\t- Vitor Ciudim;\n_____________________________________________________________________\n\n\tTESTERS:\n\t\t\t\t- Beatriz;\n\t\t\t\t- Jonatas;\n\t\t\t\t- Pâmela;\n\t\t\t\t- Pedro;\n_____________________________________________________________________");
+        jTextArea.setAutoscrolls(false);
+        jTextArea.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jScrollPane1.setViewportView(jTextArea);
-
-        btnEquipe.setLabel("EQUIPE");
-        btnEquipe.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEquipeActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(252, 252, 252)
-                .addComponent(btnEquipe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnEquipe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnEquipeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEquipeActionPerformed
-        // TODO add your handling code here:
-        //new frmEquipe().setVisible(true);
-        frmEquipe frmE = frmEquipe.getInstance(); 
-        frmE.setVisible(true);
-        frmE.requestFocus();
-    }//GEN-LAST:event_btnEquipeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -121,28 +93,26 @@ public class frmSobre extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(frmSobre.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(frmEquipe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(frmSobre.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(frmEquipe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(frmSobre.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(frmEquipe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(frmSobre.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(frmEquipe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new frmSobre().setVisible(true);
+                new frmEquipe().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private java.awt.Button btnEquipe;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea;
-    private javax.swing.JLabel lblLogo;
     // End of variables declaration//GEN-END:variables
 }

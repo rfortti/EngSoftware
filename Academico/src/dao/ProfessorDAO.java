@@ -54,7 +54,7 @@ public class ProfessorDAO extends GenericDAO {
     }
 
     public boolean inserirProfessor(Professor professor) throws SQLException {
-        String sql2 = "insert into tblProfessor (Usuario_prontuario, salario) values (?, ?);";
+        String sql2 = "insert into tblProfessor (prontuario, salario) values (?, ?);";
         try {
             this.prepareStmte(sql2);
             this.stmte.setString(1, professor.getProntuario());
@@ -68,8 +68,8 @@ public class ProfessorDAO extends GenericDAO {
 
     public Professor pesquisar(String prontuario) throws SQLException {
         String sql = "SELECT * FROM tblUsuario "
-                   + "INNER JOIN tblProfessor ON (tblprofessor.Usuario_prontuario = tblusuario.prontuario) "
-                   + "where tblProfessor.Usuario_prontuario = ?;";
+                   + " INNER JOIN tblProfessor ON (tblprofessor.prontuario = tblusuario.prontuario) "
+                   + " WHERE tblProfessor.prontuario = ?;";
         Professor professor = new Professor();
         try {
             this.prepareStmte(sql);
@@ -97,7 +97,7 @@ public class ProfessorDAO extends GenericDAO {
                 Professor p = new Professor();
                 p.setIdade(resultSet.getInt("idade"));
                 p.setNome(resultSet.getString("nome"));
-                p.setProntuario(resultSet.getString("Usuario_prontuario"));
+                p.setProntuario(resultSet.getString("prontuario"));
                 p.setSalario(resultSet.getDouble("salario"));
                 professores.add(p);
             }
@@ -122,7 +122,7 @@ public class ProfessorDAO extends GenericDAO {
     }
 
     public boolean alterarProfessor(Professor professor) throws SQLException {
-        String sql = "UPDATE tblProfessor SET salario = ? where Usuario_prontuario = ?;";
+        String sql = "UPDATE tblProfessor SET salario = ? where prontuario = ?;";
       
         try {
             this.prepareStmte(sql);
@@ -136,7 +136,7 @@ public class ProfessorDAO extends GenericDAO {
     }
 
     public boolean deletar(Professor professor) {
-        String sql = "delete from tblProfessor where Usuario_prontuario = ?;";
+        String sql = "delete from tblProfessor where prontuario = ?;";
         String sql2 = "delete from tblUsuario where prontuario = ?;";
         try {
             this.prepareStmte(sql);

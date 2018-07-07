@@ -9,12 +9,14 @@ import dto.Idioma;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import dto.Idioma;
 
 /**
  *
- * @author Multas
+ * @author Janaina & Roberto
  */
 public class IdiomaDAO extends GenericDAO {
 
@@ -23,7 +25,7 @@ public class IdiomaDAO extends GenericDAO {
     }
 
     public int AutoIncID() {
-        String sql = "SELECT (MAX(id_idioma) + 1) as id FROM tblidioma";
+        String sql = "SELECT (MAX(idIdioma) + 1) as id FROM tblIdioma";
         this.prepareStmte(sql);
         ResultSet rs;
         int retorno = 0;
@@ -40,12 +42,12 @@ public class IdiomaDAO extends GenericDAO {
     }
 
     public boolean inserir(Idioma idioma) {
-        String sql = "INSERT INTO tblidioma (id_idioma, idioma) VALUES (?, ?)";
+        String sql = "INSERT INTO tblIdioma (idIdioma, nome) VALUES (?, ?)";
 
         try {
             this.prepareStmte(sql);
-            this.stmte.setInt(1, idioma.getI_ID());
-            this.stmte.setString(2, idioma.getI_Nome());
+            this.stmte.setInt(1, idioma.getIdIdioma());
+            this.stmte.setString(2, idioma.getIdioma());
             this.stmte.execute();
             return true;
         } catch (Exception e) {
@@ -54,11 +56,11 @@ public class IdiomaDAO extends GenericDAO {
     }
 
     public boolean excluir(Idioma idioma) {
-        String sql = "DELETE FROM tblidioma WHERE id_idioma = ?";
+        String sql = "DELETE FROM tblIdioma WHERE idIdioma = ?";
 
         try {
             this.prepareStmte(sql);
-            this.stmte.setInt(1, idioma.getI_ID());
+            this.stmte.setInt(1, idioma.getIdIdioma());
             //this.stmte.execute();
 
             int exec = this.stmte.executeUpdate();
@@ -74,12 +76,12 @@ public class IdiomaDAO extends GenericDAO {
     }
 
     public boolean editar(Idioma idioma) {
-        String sql = "UPDATE tblidioma SET idioma = ? WHERE id_idioma = ?";
+        String sql = "UPDATE tblIdioma SET nome = ? WHERE idIdioma = ?";
 
         try {
             this.prepareStmte(sql);
-            this.stmte.setString(1, idioma.getI_Nome());
-            this.stmte.setInt(2, idioma.getI_ID());
+            this.stmte.setString(1, idioma.getIdioma());
+            this.stmte.setInt(2, idioma.getIdIdioma());
             this.stmte.execute();
             return true;
         } catch (Exception e) {
@@ -87,38 +89,34 @@ public class IdiomaDAO extends GenericDAO {
         }
     }
 
-    public Idioma getIdiomaByNome(String nome_idioma) {
-        Idioma cat = new Idioma();
-
-        String sql = "SELECT * FROM tblidioma WHERE idioma LIKE ?";
-        try {
-            this.prepareStmte(sql);
-            this.stmte.setString(1, nome_idioma + '%');
-            ResultSet rs = this.stmte.executeQuery(); //sempre usar quando fazer uma consulta(SELECT)
-            rs.first();
-            cat.setI_ID(rs.getInt("id_idioma"));
-            cat.setI_Nome(rs.getString("idioma"));
-            return cat;
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public ArrayList<Idioma> getIdiomasByID() //L I S T A
+    /*
+    ALTEREI O NOME AQUI, PORQUE O METODO RETORNA UMA LISTA COM TODOS OS IDIOMAS
+    TB MUDEI A FORMA DO METODO PASSANDO UM PARAMETRO,PQ TINHA OUTRO METODO IGUAL
+    MUDANDO SOMENTE A SQL, 
+    QDO PARAMENTRO = 1 ORDENA PELO ID
+    QDO PARAMENTRO = 2 ORDENA PELO NOME DO IDIOMA
+    */
+    public ArrayList<Idioma> getIdiomas(int parametro) //L I S T A
     {
         ArrayList<Idioma> idioma = new ArrayList<>();
-        //Categoria[] categorias = new Categoria[200];
-        //int x = 0;
-        String sql = "SELECT * FROM tblidioma ORDER BY id_idioma ASC";
 
+        String sql = "";
+        if(parametro == 1){
+            //ORDENA PELO ID DO IDIOMA
+           sql = "SELECT * FROM tblIdioma ORDER BY idIdioma ASC";
+        }else if(parametro == 2){
+            //ORDENA PELO NOME DO IDIOMA
+            sql = "SELECT * FROM tblIdioma ORDER BY nome ASC";
+        }
+               
         try {
             this.prepareStmte(sql);
             ResultSet rs = this.stmte.executeQuery(sql); //sempre usar quando fazer uma consulta(SELECT)
             rs.beforeFirst();
             while (rs.next()) {
                 Idioma i = new Idioma();
-                i.setI_ID(rs.getInt("id_idioma"));
-                i.setI_Nome(rs.getString("idioma"));
+                i.setIdIdioma(rs.getInt("idIdioma"));
+                i.setIdioma(rs.getString("nome"));
                 idioma.add(i);
                 //x++;
             }
@@ -126,53 +124,75 @@ public class IdiomaDAO extends GenericDAO {
         } catch (Exception e) {
             return null;
         } 
-    }
+    }        
 
-    public ArrayList getIdiomasByID(int id_idioma) //by Jônatas (pf não apague)
+    public ArrayList getIdiomasByID(int idIdioma) //by Jônatas (pf não apague)
     {
         ArrayList idioma = new ArrayList<>();
-        String sql = "SELECT * FROM tblrelacionamento inner join tblidioma"
-                + " on (tblrelacionamento.Idioma_id_idioma = tblidioma.id_idioma) "
-                + "where usuario_prontuario = ? group by tblidioma.id_idioma;";
+        String sql = "SELECT * FROM tblrelacionamento inner join tblIdioma "
+                + " on (tblrelacionamento.ididioma = tblidioma.idIdioma) "
+                + " where prontuario = ? group by tblIdioma.idIdioma;";
         try {
             this.prepareStmte(sql);
-            this.stmte.setInt(1, id_idioma);
+            this.stmte.setInt(1, idIdioma);
             ResultSet rs = this.stmte.executeQuery();
             rs.beforeFirst();
             while (rs.next()) {
                 Idioma i = new Idioma();
-                i.setI_ID(rs.getInt("id_idioma"));
-                i.setI_Nome(rs.getString("idioma"));
+                i.setIdIdioma(rs.getInt("idIdioma"));
+                i.setIdioma(rs.getString("nome"));
                 idioma.add(i);
             }
             return idioma;
         } catch (SQLException e) {
             return null;
-        }
-        
+        }        
     }
+    
+    public Idioma getIdioma(String nome) {
 
-    public ArrayList<Idioma> getIdiomasByNome() //L I S T A
-    {
-        ArrayList<Idioma> idioma = new ArrayList<Idioma>();
+        Idioma iVO = new Idioma();
+        String sql = "SELECT * FROM projeto.tblIdioma WHERE nome = ?";
+        try {
+            
+            this.prepareStmte(sql);
+            this.stmte.setString(1, nome);
+            ResultSet rs = this.stmte.executeQuery();
 
-        int x = 0;
-        String sql = "SELECT * FROM tblidioma ORDER BY idioma ASC";
+            rs.first();
+            iVO.setIdIdioma(rs.getInt("idIdioma"));
+
+            stmte.close();
+            this.closeAll();
+            rs.close();
+            return iVO;
+
+        } catch (SQLException ex) {
+            //JOptionPane.showMessageDialog(null, "Ocorreu um erro no metodo getCategoria, classe CategoriaDAO" + ex);
+            return null;
+        }
+    }
+    
+    public List<Idioma> listarIdiomas() {
 
         try {
-            this.prepareStmte(sql);
-            ResultSet rs = this.stmte.executeQuery(); //sempre usar quando fazer uma consulta(SELECT)
+                String sql = "SELECT * FROM projeto.tblIdioma";
+                this.prepareStmte(sql);                          
 
+            ResultSet rs = this.stmte.executeQuery();
+            //monta o array 
+            List<Idioma> listaIdiomas = new ArrayList<Idioma>();
             while (rs.next()) {
-                Idioma i = new Idioma();
-                i.setI_ID(rs.getInt("id_idioma"));
-                i.setI_Nome(rs.getString("idioma"));
-                idioma.add(i);
-                x++;
+                Idioma iVO = new Idioma();
+                iVO.setIdioma(rs.getString("nome"));
+                listaIdiomas.add(iVO);
             }
-            return idioma;
-
-        } catch (Exception e) {
+            rs.close();
+            //stmte.close();
+            this.closeAll();
+            return listaIdiomas;
+        } catch (SQLException ex) {
+            //JOptionPane.showMessageDialog(null, "Ocorreu um erro no metodo listaEditora, classe Editora" + ex);
             return null;
         }
     }

@@ -6,31 +6,42 @@
 
 package forms;
 
-import utils.AceitaNumeros;
 import utils.AceitaStrings;
 import utils.LimitarLetras;
 import utils.LimitarNumeros;
 import java.util.ArrayList;
 import dao.IdiomaDAO;
 import dto.Idioma;
-import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 /**
  *
- * @author Multas
+ * @author Janaina & Roberto
  */
-public class frmIdioma extends javax.swing.JFrame {
+public class frmIdioma extends javax.swing.JFrame 
+{
 
     /**
      * Creates new form frmIdioma
      */
     
     private IdiomaDAO idiomaDAO;
+    private static frmIdioma instance;
 
+    public static frmIdioma getInstance()
+    {
+      if(instance == null)
+      {
+        instance = new frmIdioma();
+        
+      }
+       
+      return instance;
+    }
+    
     private void preencheTabela() {
         ArrayList<Idioma> idioma = new ArrayList<Idioma>();
-        idioma = this.idiomaDAO.getIdiomasByID();
+        idioma = this.idiomaDAO.getIdiomas(1);
         
         DefaultTableModel tabela = (DefaultTableModel) tbIdioma.getModel();
         tabela.setNumRows(0);
@@ -38,6 +49,7 @@ public class frmIdioma extends javax.swing.JFrame {
         //Verifica se retornou algum valor da consulta.
         if (idioma == null)
         {
+            JOptionPane.showMessageDialog(null, "Prontuário não encontrado, verifique os dados!!!");
             return;
         }
         
@@ -48,19 +60,24 @@ public class frmIdioma extends javax.swing.JFrame {
             if (i != null) 
             {
                 Object[] obj = new Object[]{
-                    i.getI_ID(),
-                    i.getI_Nome()
+                    i.getIdIdioma(),
+                    i.getIdioma()
                 };
                 tabela.addRow(obj);
             }
         }
     }
     
-    public frmIdioma() {
+    frmIdioma() 
+    {
+
         initComponents();
         
         this.idiomaDAO = new IdiomaDAO();
+        //setAlwaysOnTop(true); 
+        btnInserir.requestFocusInWindow();
         preencheTabela();
+        
 
         txtID.setDocument(new LimitarNumeros(11));
         txtIdioma.setDocument(new AceitaStrings());
@@ -96,6 +113,7 @@ public class frmIdioma extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(".: Cadastro de Idiomas :.");
         setBackground(new java.awt.Color(255, 255, 255));
+        setName("frmIdioma"); // NOI18N
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -311,7 +329,7 @@ public class frmIdioma extends javax.swing.JFrame {
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         // TODO add your handling code here:
         Idioma idioma = new Idioma();
-        idioma.setI_ID(Integer.parseInt(txtID.getText()));
+        idioma.setIdIdioma(Integer.parseInt(txtID.getText()));
 
         int dialogButton = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir o Idioma selecionado ?", "Warning", 0);// 0 = botão Sim e Não
 
@@ -367,7 +385,7 @@ public class frmIdioma extends javax.swing.JFrame {
         
         if (rbID.isSelected()) {
             ArrayList<Idioma> idioma = new ArrayList<Idioma>();
-            idioma = this.idiomaDAO.getIdiomasByID();
+            idioma = this.idiomaDAO.getIdiomas(1);
             
             DefaultTableModel tabela = (DefaultTableModel) tbIdioma.getModel();
             tabela.setNumRows(0);          
@@ -377,8 +395,8 @@ public class frmIdioma extends javax.swing.JFrame {
                     if (i != null)
                     {
                         Object[] obj = new Object[]{
-                            i.getI_ID(),
-                            i.getI_Nome()
+                            i.getIdIdioma(),
+                            i.getIdioma()
                         };
                         tabela.addRow(obj);
                     }
@@ -397,7 +415,7 @@ public class frmIdioma extends javax.swing.JFrame {
         
         if (rbIdioma.isSelected()) {
             ArrayList<Idioma> idioma = new ArrayList<Idioma>();
-            idioma = this.idiomaDAO.getIdiomasByNome();
+            idioma = this.idiomaDAO.getIdiomas(2);
             
             DefaultTableModel tabela = (DefaultTableModel) tbIdioma.getModel();
             tabela.setNumRows(0);
@@ -407,8 +425,8 @@ public class frmIdioma extends javax.swing.JFrame {
                     if (i != null)
                     {
                         Object[] obj = new Object[]{
-                            i.getI_ID(),
-                            i.getI_Nome()
+                            i.getIdIdioma(),
+                            i.getIdioma()
                         };
                         tabela.addRow(obj);
                     }
@@ -463,8 +481,8 @@ public class frmIdioma extends javax.swing.JFrame {
         {
             Idioma cat = new Idioma();
 
-            cat.setI_ID(Integer.parseInt(txtID.getText()));
-            cat.setI_Nome(txtIdioma.getText().toUpperCase());
+            cat.setIdIdioma(Integer.parseInt(txtID.getText()));
+            cat.setIdioma(txtIdioma.getText().toUpperCase());
                     
             if (this.idiomaDAO.inserir(cat) == true)
             {
@@ -475,14 +493,14 @@ public class frmIdioma extends javax.swing.JFrame {
             } 
             else 
             {
-                JOptionPane.showMessageDialog(null, "Erro ao adicionar Idioma!");
+                JOptionPane.showMessageDialog(null, "Idioma '" + txtIdioma.getText().toUpperCase()+ "' já existe cadastrado !");
             }
         } 
         else if (opcao == 2) 
         {
             Idioma idioma = new Idioma();
-            idioma.setI_ID(Integer.parseInt(txtID.getText()));
-            idioma.setI_Nome(txtIdioma.getText().toUpperCase());
+            idioma.setIdIdioma(Integer.parseInt(txtID.getText()));
+            idioma.setIdioma(txtIdioma.getText().toUpperCase());
 
             if (this.idiomaDAO.editar(idioma) == true) 
             {

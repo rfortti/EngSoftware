@@ -13,7 +13,7 @@ import jdbc.ConnectionFactory;
 
 /**
  *
- * @author Rafael Wendel Pinheiro
+ * @author Janaina & Roberto
  */
 public class GenericDAO 
 {

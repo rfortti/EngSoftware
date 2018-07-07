@@ -6,24 +6,26 @@ package dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
-import vo.AlunoVO;
+import dto.Aluno;
 
 /**
  *
  * @author Aluno
  */
-public class AlunoMDAO extends GenericDAO {
+public class AlunoDAO extends GenericDAO {
 
-    public AlunoMDAO() {
+    public AlunoDAO() {
         super();
-    }
+    }        
 
-    public boolean inserir(AlunoVO aVO) {
+    public boolean inserir(Aluno aVO) {
         try {
-            String sql = "INSERT INTO projeto.tblaluno (Usuario_prontuario, cidade) VALUES (?,?)";
+            String sql = "INSERT INTO projeto.tblaluno (prontuario, cidade, uf, pais) VALUES (?,?,?,?)";
             this.prepareStmte(sql);
-            this.stmte.setString(1, aVO.getUsuario_prontuario());
+            this.stmte.setString(1, aVO.getProntuario());
             this.stmte.setString(2, aVO.getCidade());
+            this.stmte.setString(3, aVO.getUf());
+            this.stmte.setString(4, aVO.getPais());
             this.stmte.execute();
             this.closeAll();
             return true;
@@ -34,9 +36,10 @@ public class AlunoMDAO extends GenericDAO {
     }
     
     //pesquisar
-    public AlunoVO getAluno(int prontuario) {
-        AlunoVO aVO = new AlunoVO();
-        String sql = "SELECT * FROM projeto.tblaluno WHERE Usuario_prontuario = ?";
+    public Aluno getAluno(int prontuario) {
+        Aluno aVO = new Aluno();
+        String sql = "SELECT * FROM projeto.tblaluno WHERE prontuario = ?";
+         
         try {
             this.prepareStmte(sql);
             this.stmte.setInt(1, prontuario);
@@ -44,6 +47,8 @@ public class AlunoMDAO extends GenericDAO {
 
             rs.first();
             aVO.setCidade(rs.getString("cidade"));
+            aVO.setUf(rs.getString("uf"));
+            aVO.setPais(rs.getString("pais"));
             //stmte.close();
             this.closeAll();
             rs.close();
@@ -54,12 +59,14 @@ public class AlunoMDAO extends GenericDAO {
         }
     }
     
-     public boolean update(AlunoVO aVO) {
+     public boolean update(Aluno aVO) {
         try {
-            String sql = "UPDATE projeto.tblaluno SET cidade = ? WHERE Usuario_prontuario = ?";
+            String sql = "UPDATE projeto.tblaluno SET cidade = ?, uf = ?, pais = ? WHERE prontuario = ?";
             this.prepareStmte(sql);
             this.stmte.setString(1, aVO.getCidade());  
-            this.stmte.setString(2, aVO.getUsuario_prontuario());
+            this.stmte.setString(2, aVO.getUf());
+            this.stmte.setString(3, aVO.getPais());  
+            this.stmte.setString(4, aVO.getProntuario());
             this.stmte.execute();
             //this.stmte.close();
             this.closeAll();

@@ -19,7 +19,22 @@ public class frmRelatorio extends javax.swing.JFrame
   /**
    * Creates new form frmProfessor
    */
-  public frmRelatorio()
+  
+  private static frmRelatorio instance;
+    
+    public static frmRelatorio getInstance()
+    {
+        if(instance == null)
+      {
+        instance = new frmRelatorio();
+        
+      }
+       
+      return instance;
+        
+    }  
+    
+  frmRelatorio()
   {
     initComponents();
 
